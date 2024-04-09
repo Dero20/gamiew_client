@@ -1,0 +1,24 @@
+.search-results {
+  position: absolute;
+  top: 150px;
+  left: 50%;
+  width: 80vw;
+  transform: translate(-50%, 0);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.search-message {
+  font-size: 20px;
+}
+
+@media (max-width: 1000px) {
+  .search-message {
+    font-size: 15px;
+  }
+
+  .search-results {
+    width: 90vw;
+  }
+}
