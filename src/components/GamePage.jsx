@@ -2,7 +2,6 @@ import { useParams } from "react-router";
 
 import ReviewEntry from "./ReviewEntry";
 import React, { useState, useEffect, useRef } from "react";
-import Axios from "axios";
 
 import "./GamePage.css";
 
@@ -13,6 +12,7 @@ import gameIcon1 from "../img/game-icon-1.svg";
 import gameIcon2 from "../img/game-icon-2.svg";
 import gameIcon3 from "../img/game-icon-3.svg";
 import gameIcon4 from "../img/game-icon-4.svg";
+import { axiosInstance } from "../utils/axios";
 
 export default function GamePage() {
 	const gameIcons = [gameIcon1, gameIcon2, gameIcon3, gameIcon4];
@@ -53,9 +53,10 @@ export default function GamePage() {
 	};
 
 	useEffect(() => {
-		Axios.post("/game/get", {
-			title: gameTitle,
-		})
+		axiosInstance
+			.post(`/game/get`, {
+				title: gameTitle,
+			})
 			.then((response) => {
 				//   console.log(response.data);
 				setGame(response.data);
@@ -64,9 +65,10 @@ export default function GamePage() {
 			.catch((err) => {
 				console.log(err.message);
 			});
-		Axios.post("/game/getReviews", {
-			title: gameTitle,
-		})
+		axiosInstance
+			.post(`/game/getReviews`, {
+				title: gameTitle,
+			})
 			.then((response) => {
 				console.log(response.data);
 				setReviews(response.data);
@@ -98,27 +100,30 @@ export default function GamePage() {
 		if (!game) {
 			return;
 		}
-		Axios.post("/game/edit", {
-			title: game.title,
-			description: newGameDescription,
-			publisher: newGamePublisher,
-			url: newGameUrl,
-		}).then((response) => {
-			setGame(response.data);
-			setIsEdit(false);
-			setNewGameDescription(null);
-		});
+		axiosInstance
+			.post(`/game/edit`, {
+				title: game.title,
+				description: newGameDescription,
+				publisher: newGamePublisher,
+				url: newGameUrl,
+			})
+			.then((response) => {
+				setGame(response.data);
+				setIsEdit(false);
+				setNewGameDescription(null);
+			});
 	}
 
 	function submitNewReview() {
 		if (!game || !newReviewRating || !newReviewContent) {
 			return;
 		}
-		Axios.post("/review/create", {
-			content: newReviewContent,
-			gameTitle: game.title,
-			rating: newReviewRating,
-		})
+		axiosInstance
+			.post(`/review/create`, {
+				content: newReviewContent,
+				gameTitle: game.title,
+				rating: newReviewRating,
+			})
 			.then((response) => {
 				setNewReviewContent(null);
 				setNewReviewRating(5);
@@ -132,7 +137,8 @@ export default function GamePage() {
 		if (!game) {
 			return;
 		}
-		Axios.post("/game/delete", { title: game.title })
+		axiosInstance
+			.post(`/game/delete`, { title: game.title })
 			.then(() => {
 				navigate("/home");
 			})

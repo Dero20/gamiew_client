@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router";
-import Axios from "axios";
 import controller from "../img/game-controller-gamepad-svgrepo-com.svg";
 import "./NaviBar.css";
+import { axiosInstance } from "../utils/axios";
 
 export default function NaviBar(props) {
 	const { state } = useLocation();
@@ -13,21 +13,28 @@ export default function NaviBar(props) {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		Axios.get("/user/isLoggedIn")
+		axiosInstance
+			.get(`/user/isLoggedIn`, {
+				withCredentials: true,
+			})
 			.then((response) => {
 				setUsername(response.data.username);
 				if (props.setUsername) {
 					props.setUsername(response.data.username);
 				}
 			})
-			.catch((error) => console.log("User is not logged in"));
+			.catch((error) => console.log("User is not logged in", error.message));
 	}, [state]);
 
 	function logout() {
 		console.log("logout called react");
-		Axios.post("/user/logout")
+
+		axiosInstance
+			.post(`/user/logout`)
 			.then((response) => {
 				setUsername(null);
+				localStorage.clear();
+
 				navigate("/home");
 			})
 			.catch((error) => console.log("Error logging out"));

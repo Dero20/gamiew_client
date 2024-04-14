@@ -1,8 +1,10 @@
 import "./Signup.css";
-import React, { useState, useEffect } from "react";
-import Axios from "axios";
+import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import NaviBar from "./NaviBar";
+import { axiosInstance } from "../utils/axios";
+
+console.log(process.env);
 
 function Signup() {
 	const [curUserName, setCurUserName] = useState(null);
@@ -24,10 +26,11 @@ function Signup() {
 
 		console.log(`submitted; username=${username}, password=${password}`);
 
-		Axios.post("/user/create", {
-			username: username,
-			password: password,
-		})
+		axiosInstance
+			.post(`/user/create`, {
+				username: username,
+				password: password,
+			})
 			.then((response) => {
 				navigate("/home", { state: { username: response.data.username } });
 			})

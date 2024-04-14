@@ -1,8 +1,8 @@
 import "./Login.css";
 import React, { useState, useEffect } from "react";
-import Axios from "axios";
 import { useNavigate } from "react-router";
 import NaviBar from "./NaviBar";
+import { axiosInstance } from "../utils/axios";
 
 function Login() {
 	const [curUserName, setCurUserName] = useState(null);
@@ -21,16 +21,21 @@ function Login() {
 
 	function submit() {
 		console.log(`submitted; username=${username}, password=${password}`);
+
 		if (!username || !password) {
 			setMessage("username and password cannot be empty.");
 			return;
 		}
-		Axios.post("/user/authenticate", {
-			username: username,
-			password: password,
-		})
+		axiosInstance
+			.post(`/user/authenticate`, {
+				username: username,
+				password: password,
+			})
 			.then((response) => {
-				navigate("/home", { state: { username: response.data.username } });
+				localStorage.setItem("token", response.data.accessToken);
+				navigate("/home", {
+					state: { username: response.data.username },
+				});
 			})
 			.catch((err) => {
 				setMessage(err.message);

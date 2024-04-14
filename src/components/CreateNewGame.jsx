@@ -1,9 +1,9 @@
 import "./CreateNewGame.css";
 
-import React, { useState, useEffect } from "react";
-import Axios from "axios";
+import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import NaviBar from "./NaviBar";
+import { axiosInstance } from "../utils/axios";
 
 export default function CreateNewGame() {
 	const [username, setUsername] = useState(null);
@@ -25,12 +25,13 @@ export default function CreateNewGame() {
 			setMessage("Please fill in all fields.");
 			return;
 		}
-		Axios.post("/game/create", {
-			title: gameTitle,
-			description: gameDescription,
-			publisher: gamePublisher,
-			url: gameUrl,
-		})
+		axiosInstance
+			.post(`/game/create`, {
+				title: gameTitle,
+				description: gameDescription,
+				publisher: gamePublisher,
+				url: gameUrl,
+			})
 			.then((response) => {
 				const gameURL = "/game/" + encodeURIComponent(response.data.title);
 				// navigate("/home");
